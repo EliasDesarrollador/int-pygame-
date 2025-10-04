@@ -1,0 +1,13 @@
+# Ignorar entorno virtual
+venv/
+
+# Archivos de Python que no hacen falta
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# IDEs
+.vscode/
+.idea/
