@@ -59,6 +59,7 @@ class Enemigo:
         self.velocidad = 3
         self.size = 50
 
+    # Método de la clase Enemigo
     def mover(self):
         self.x += random.choice([-self.velocidad, self.velocidad])
         self.y += random.choice([-self.velocidad, self.velocidad])
@@ -74,17 +75,17 @@ class Enemigo:
         elif self.y > ALTO - self.size:
             self.y = ALTO - self.size
 
+ # Método para dibujar el enemigo
     def dibujar(self, pantalla):
         pygame.draw.rect(pantalla, self.color, (self.x, self.y, self.size, self.size))
-
-
+# Función principal del juego
 def main():
     jugador = Jugador(375, 275, (255, 0, 0))  # Rojo
     enemigo = Enemigo(100, 100, (0, 0, 255))  # Azul
 
     reloj = pygame.time.Clock()
     corriendo = True
-
+    # Bucle principal del juego
     while corriendo:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -101,8 +102,8 @@ def main():
         if teclas[pygame.K_DOWN]:
             jugador.mover("abajo")
 
+        # Mover enemigo
         enemigo.mover()
-
         # Verificar colisión (rectángulos simples)
         if (
             jugador.x < enemigo.x + enemigo.size
@@ -117,12 +118,11 @@ def main():
         pantalla.fill((0, 0, 0))  # Fondo negro
         jugador.dibujar(pantalla)
         enemigo.dibujar(pantalla)
-        pygame.display.flip()
-
+        pygame.display.flip() #Actualizar pantalla
+        #Regular la velocidad del juego
         reloj.tick(30)  # 30 FPS
-
+        #Salir de Pygame
     pygame.quit()
-
-
+    #Salir del sistema
 if __name__ == '__main__':
     main()
