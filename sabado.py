@@ -56,7 +56,7 @@ class Enemigo:
         self.x = x
         self.y = y
         self.color = color
-        self.velocidad = 3
+        self.velocidad =  20
         self.size = 50
 
     # Método de la clase Enemigo
