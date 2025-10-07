@@ -61,4 +61,30 @@ class Jugador (pygame.sprite.Sprite):
             self.manejar_input() #Detecta las teclas  y nueve jugador
             self.aplicar_gravedad() #Aplica gravedad y salto
             
+# ==========================
+#CLASE JUEGO PRINCIPAL
+# ==========================
+class Juego: # Clase que controla todo el juego
+    def __init__(self): # Constructor
+        self.fondo = pygame.image.load("assets/images/fondo.png").convert()  # Cargamos la imagen de fondo
+        self.fondo = pygame.transform.scale (self.fondo, (ANCHO, ALTO)) # Ajustamos el  tamano de la pantalla 
 
+        self.todos_sprites = pygame.sprite.Group() #Grupo que contendra todos los sprites
+
+        self.jugador = Jugador (100, 500) # Creamos al jugador en posicion inicial (100, 500)
+        self.todos_sprites.add(self.jugador) # Agregamos  al jugador  al grupo de sprites
+
+    def ejecutar(self): #Metodo que ejecuta el loop principal del juego
+        while True: # Bucle infinito  hasta cerrar el juego 
+            for event in pygame.event.get() #Capturamos los eventos (como  cerrar la ventana )
+            if event.type == pygame.QUIT: # Si el cierra la ventana
+                pygame.quit() #Cerramos pygame
+                sys.exit() #Terminamos el programa
+
+                PANTALLA.blit(self.fondo, (0,  0)) #Dibujamos el fondo de pantalla 
+
+                self.todos_sprites.update() #Actualiza todos los sprites (jugador)
+                self.todos_sprites.draw(PANTALLA) # Dibujamos los sprites en la pantalla
+
+                pygame.display.update() #Actualizamos  la pantalla  con los nuevos dibujos
+                clock.tick(FPS) # Limitamos la velocidad del juego  a 60 FPS
