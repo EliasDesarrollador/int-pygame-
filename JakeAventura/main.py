@@ -5,8 +5,17 @@ import sys
 #Inicializar pygame
 pygame.init()
 
+#Inicializar el modulo de sonido 
+pygame.mixer.init()
+
+#Cargar archivo de sonido 
+pygame.mixer.music.load("assets/sounds/Jake cantando la noche más linda.mp3")
+
+#Reproducir la musica 
+pygame.mixer.music.set_volume(0.5) #Volumen de 0.0 a 1.0
+pygame.mixer.music.play(-1) # -1  significa que se repita infinitamente la musica durante le juego
 #Configuracion de ventana
-ANCHO , ALTO = 1000, 600 # Ventana tamano
+ANCHO , ALTO = 1200, 800 # Ventana tamano
 PANTALLA = pygame.display.set_mode((ANCHO, ALTO)) #Creamos la ventana 
 pygame.display.set_caption("Jake Adventure 🐶 ") #Titulo de la ventana 
 
@@ -14,7 +23,7 @@ pygame.display.set_caption("Jake Adventure 🐶 ") #Titulo de la ventana
 NEGRO = (0, 0, 0)
 
 #Fondo
-fondo = pygame.image.load("assets/images/fondo.png")
+fondo = pygame.image.load("assets/images/fondonivel1.png")
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
 # FPS
@@ -27,9 +36,9 @@ clock = pygame.time.Clock() #Reloj de control de control de FPS
 
 class Jugador (pygame.sprite.Sprite):
     def __init__ (self, x, y ):
-        super() .__init__()
+        super().__init__()
         #Cargamos la imagen del personaje 
-        self.image = pygame.load("assets/images/jake.png").convert() #
+        self.image = pygame.image.load("assets/images/jake.png").convert_alpha() # Cargamos la imagen con transparencia
         self.image = pygame.transform.scale(self.image, (80,80)) #
         self.rect = self.image.get_rect(midbottom = (x , y)) #
 
@@ -40,7 +49,7 @@ class Jugador (pygame.sprite.Sprite):
         #Metodos 
 # ==========================
 
-        def manejar_input(self): # Metodo para manejar las entradas del teclado del jugador 
+    def manejar_input(self): # Metodo para manejar las entradas del teclado del jugador 
             keys = pygame.key.get_pressed() # Detecta las teclas presionadas
             if keys[pygame.K_RIGHT] : # si se presiona flecha derecha 
                 self.rect.x += 5  # Mueve a jake 5 pixeles a la derecha 
@@ -50,14 +59,14 @@ class Jugador (pygame.sprite.Sprite):
                 self.vel_y =  -15 # Salta  ( Velocidad negativa  hacia arriba )
                 self.en_suelo = False  #  ya no esta en el suelo
 
-        def aplicar_gravedad(self) : # Metodo para aplicar gravedad
+    def aplicar_gravedad(self) : # Metodo para aplicar gravedad
             self.vel_y +=  1 # Aumenta la velocidad vertical ( simula caida)
             self.rect.y += self.vel_y  #   Mueve al jugador segun velocidad
             if self.rect.bottom >= 500:  # Si toca el suelo linea y = 500
                 self.rect.bottom = 500 # Lo mantiene en el suelo 
                 self.en_suelo = True # Marca que esta en suelo
 
-        def update(self) : # Metodo que se ejecuta en cada frame
+    def update(self) : # Metodo que se ejecuta en cada frame
             self.manejar_input() #Detecta las teclas  y nueve jugador
             self.aplicar_gravedad() #Aplica gravedad y salto
             
@@ -66,7 +75,7 @@ class Jugador (pygame.sprite.Sprite):
 # ==========================
 class Juego: # Clase que controla todo el juego
     def __init__(self): # Constructor
-        self.fondo = pygame.image.load("assets/images/fondo.png").convert()  # Cargamos la imagen de fondo
+        self.fondo = pygame.image.load("assets/images/fondonivel1.png").convert()  # Cargamos la imagen de fondo
         self.fondo = pygame.transform.scale (self.fondo, (ANCHO, ALTO)) # Ajustamos el  tamano de la pantalla 
 
         self.todos_sprites = pygame.sprite.Group() #Grupo que contendra todos los sprites
@@ -76,15 +85,21 @@ class Juego: # Clase que controla todo el juego
 
     def ejecutar(self): #Metodo que ejecuta el loop principal del juego
         while True: # Bucle infinito  hasta cerrar el juego 
-            for event in pygame.event.get() #Capturamos los eventos (como  cerrar la ventana )
-            if event.type == pygame.QUIT: # Si el cierra la ventana
-                pygame.quit() #Cerramos pygame
-                sys.exit() #Terminamos el programa
+            for event in pygame.event.get() :#Capturamos los eventos (como  cerrar la ventana)
+                    if event.type == pygame.QUIT: # Si el cierra la ventana
+                        pygame.quit() #Cerramos pygame
+                        sys.exit() #Terminamos el programa
 
-                PANTALLA.blit(self.fondo, (0,  0)) #Dibujamos el fondo de pantalla 
+            PANTALLA.blit(self.fondo, (0,  0)) #Dibujamos el fondo de pantalla 
+            self.todos_sprites.update() #Actualiza todos los sprites (jugador)
+            self.todos_sprites.draw(PANTALLA) # Dibujamos los sprites en la pantalla
 
-                self.todos_sprites.update() #Actualiza todos los sprites (jugador)
-                self.todos_sprites.draw(PANTALLA) # Dibujamos los sprites en la pantalla
+            pygame.display.update() #Actualizamos  la pantalla  con los nuevos dibujos
+            clock.tick(FPS) # Limitamos la velocidad del juego  a 60 FPS
 
-                pygame.display.update() #Actualizamos  la pantalla  con los nuevos dibujos
-                clock.tick(FPS) # Limitamos la velocidad del juego  a 60 FPS
+# ==========================
+#EJECUTAR EL JUEGO
+# ==========================
+if __name__ == "__main__": # Si ejecutamos este archivo directamente
+    juego = Juego() #Creamos instancia del juego 
+    juego.ejecutar()# Llamamos al metodo principal  que corre el juego 
